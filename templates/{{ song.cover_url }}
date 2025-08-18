@@ -1,0 +1,2 @@
+<!-- This template displays the cover image for a song using the cover_url variable -->
+<img src="{{ song.cover_url }}" alt="Song Cover" />

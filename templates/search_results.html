@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <style>
+        body 
+        { 
+            background-image: url('https://media.gettyimages.com/id/664301506/photo/dj-mixing.jpg?s=612x612&w=0&k=20&c=yPjYB8bbyQQiQZejhX_0bgjyjk8DqE3lBErPYU8PH1I=');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif; 
+            margin: 0;
+        }
+        .search-form { margin-bottom: 2em; display: flex; align-items: center; }
+        .search-input {
+            padding: 0.5em 2.5em 0.5em 1em;
+            border: 1px solid #ccc;
+            border-radius: 2em 0 0 2em;
+            outline: none;
+            font-size: 1em;
+            width: 300px;
+            box-sizing: border-box;
+        }
+        .search-btn {
+            background: #4a90e2;
+            border: none;
+            border-radius: 0 2em 2em 0;
+            color: #fff;
+            padding: 0.5em 1.2em;
+            cursor: pointer;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .search-btn:hover {
+            background: #357ab8;
+        }
+        .search-icon {
+            width: 1em;
+            height: 1em;
+            margin-right: 0.5em;
+            fill: currentColor;
+        }
+        .results { margin-top: 1em; }
+        .result-item { padding: 1em; border-bottom: 1px solid #ddd; }
+        .no-results { color: #888; }
+        /* Tab styling */
+        .tab {
+            display: inline-block;
+            padding: 0.5em 1.5em;
+            margin-right: 0.5em;
+            border-radius: 2em 2em 0 0;
+            background: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            transition: background 0.2s;
+        }
+        .tab.active, .tab:hover {
+            background: #4a90e2;
+            color: #fff;
+        }
+        .tab-container {
+            margin-bottom: 1em;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Music</h1>
+    <div class="tab-container">
+        <a href="{% url 'song_list' %}" class="tab active">Songs</a>
+        <a href="{% url 'musician' %}" class="tab">Artists</a>
+        <a href="#" class="tab">Albums</a>
+    </div>
+    <form class="search-form" method="get" action="{% url 'song_list' %}">
+        <input class="search-input" type="text" name="q" placeholder="Search for songs, artists, albums..." value="{{ request.GET.q|default:'' }}">
+        <button class="search-btn" type="submit">
+            <svg class="search-icon" viewBox="0 0 20 20">
+                <circle cx="9" cy="9" r="7" stroke="white" stroke-width="2" fill="none"/>
+                <line x1="14" y1="14" x2="18" y2="18" stroke="white" stroke-width="2"/>
+            </svg>
+            Search
+        </button>
+    </form>
+
+    <div class="results">
+        {% if results %}
+            {% for item in results %}
+                <div class="result-item">
+                    <strong>{{ item.title }}</strong> by {{ item.artist }}
+                    {% if item.album %}<br>Album: {{ item.album }}{% endif %}
+                </div>
+            {% endfor %}
+        {% elif request.GET.q %}
+            <div class="no-results">No results found for "{{ request.GET.q }}".</div>
+        {% endif %}
+    </div>
+</body>
+</html>

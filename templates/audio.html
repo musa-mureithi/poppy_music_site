@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ song.title }} - Listen</title>
+</head>
+<body>
+    <h1>{{ song.title }}</h1>
+    <p>Artist: {{ song.artist }}</p>
+    <audio controls>
+
+        
+        <source src="{{ song.audio_url }}" type="audio/mpeg">
+        Your browser does not support the audio element. Please try updating your browser or use a different one.
+    </audio>
+    
+</body>
+</html>

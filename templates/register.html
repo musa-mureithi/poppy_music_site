@@ -1,0 +1,92 @@
+<h1>Sign Up Below</h1>
+
+<style>
+    body {
+        background-image: url('https://images.pexels.com/photos/7928772/pexels-photo-7928772.jpeg?auto=compress&cs=tinysrgb&w=600');
+        font-family: 'Segoe UI', Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    h1 {
+        text-align: center;
+        color: #7c3aed;
+        margin-top: 40px;
+        font-size: 2.5em;
+        letter-spacing: 2px;
+        text-shadow: 1px 2px 8px #e0c3fc;
+    }
+    h5 {
+        color: #ef4444;
+        background: #fff0f0;
+        border-left: 4px solid #ef4444;
+        padding: 8px 16px;
+        margin: 20px auto;
+        width: 350px;
+        border-radius: 4px;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(239,68,68,0.08);
+    }
+    form {
+        background: #fff;
+        max-width: 400px;
+        margin: 30px auto;
+        padding: 32px 28px 24px 28px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(124,58,237,0.12);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    form p {
+        margin: 0 0 4px 0;
+        color: #7c3aed;
+        font-weight: 600;
+        font-size: 1.05em;
+    }
+    input[type="text"], input[type="password"] {
+        padding: 10px;
+        border: 1.5px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 1em;
+        transition: border 0.2s;
+        outline: none;
+    }
+    input[type="text"]:focus, input[type="password"]:focus {
+        border: 1.5px solid #7c3aed;
+        background: #f3e8ff;
+    }
+    input[type="submit"] {
+        margin-top: 16px;
+        background: linear-gradient(90deg, #a78bfa 0%, #7c3aed 100%);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(124,58,237,0.10);
+        transition: background 0.2s, transform 0.1s;
+    }
+    input[type="submit"]:hover {
+        background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 100%);
+        transform: translateY(-2px) scale(1.03);
+    }
+</style>
+
+{% for message in messages %}
+<h5>{{message}}</h5>
+{% endfor %}
+<form method ="POST" action="{% url 'register' %}">
+    {% csrf_token %}
+    <p> User Name: </p>
+    <input type="text" name="username"/>
+    <p>Email: </p>
+    <input type="text" name="email"/>
+    <p>Password</p>
+    <input type="password" name="password"/>
+    <p>Repeat Password</p>
+    <input type="password" name="password2"/>
+    <br>
+    <input type="submit" name="submit"/>
+</form>

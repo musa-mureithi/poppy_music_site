@@ -1,0 +1,16 @@
+<!-- This template is intended to render an audio player for a song using the provided audio_url variable -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ song.title }} - Audio Player</title>
+</head>
+<body>
+    <h1>{{ song.title }}</h1>
+    <audio controls>
+        <source src="{{ song.audio_url }}" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+</body>
+</html>

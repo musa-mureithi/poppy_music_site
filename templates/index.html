@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Poppy Music Site</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&display=swap" rel="stylesheet">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+    <style>
+        body { 
+            font-family: 'Montserrat', Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-image: url('https://media.gettyimages.com/id/157425110/photo/rapper-on-concert-stage.jpg?s=612x612&w=0&k=20&c=EhY2XTZQ-vbWn01aNVvpb4x7Gl7ZydeWZfn84J6otDI=');
+            min-height: 100vh;
+        }
+        .top-bar {
+            background: rgba(255,255,255,0.95);
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.7rem 2.5rem;
+            box-shadow: 0 2px 12px rgba(108,99,255,0.07);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .top-bar .left, .top-bar .right {
+            display: flex;
+            align-items: center;
+            gap: 1.7rem;
+        }
+        .top-bar a {
+            text-decoration: none;
+            color: #6c63ff;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        .top-bar a:hover {
+            background: #6c63ff;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(108,99,255,0.15);
+        }
+        .top-bar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #6c63ff;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px #e0e7ff;
+            margin-right: 1rem;
+        }
+        .top-bar h3 {
+            margin: 0;
+            font-size: 1rem;
+            color: #444;
+            background: #e0e7ff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-weight: 400;
+        }
+        header {
+            background: linear-gradient(90deg, #6c63ff 60%, #b8b5ff 100%);
+            color: #fff;
+            padding: 3rem 1rem 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 24px rgba(108,99,255,0.13);
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
+        header h1 {
+            font-size: 2.7rem;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 16px #4b47b5;
+        }
+        header p {
+            font-size: 1.2rem;
+            margin: 0;
+            opacity: 0.93;
+        }
+        main {
+            max-width: 900px;
+            margin: 2.5rem auto;
+            background: #fff;
+            padding: 2.5rem 2rem;
+            border-radius: 18px;
+            box-shadow: 0 6px 32px rgba(108,99,255,0.09);
+            position: relative;
+            z-index: 1;
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 2rem;
+            color: #6c63ff;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+        }
+        .music-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .music-list li {
+            padding: 1.2rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: background 0.2s, box-shadow 0.2s;
+            border-radius: 10px;
+        }
+        .music-list li:hover {
+            background: #f3f0ff;
+            box-shadow: 0 2px 12px rgba(108,99,255,0.07);
+        }
+        .music-list li:last-child {
+            border-bottom: none;
+        }
+        .cover-image {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid #b8b5ff;
+            background: #fafafa;
+            box-shadow: 0 2px 8px #e0e7ff;
+        }
+        .song-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .song-info strong {
+            font-size: 1.1rem;
+            color: #4b47b5;
+        }
+        .song-info em {
+            font-size: 1.2rem;
+            color: #222;
+            font-style: normal;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: #888;
+            font-size: 1rem;
+            background: #f3f0ff;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 2rem;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+        @media (max-width: 600px) {
+            .top-bar, main {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .top-bar .left, .top-bar .right {
+                gap: 0.7rem;
+            }
+            .cover-image {
+                width: 50px;
+                height: 50px;
+            }
+            main {
+                padding: 1.2rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-bar">
+        <div class="left">
+            <span class="logo">🎵 Poppy</span>
+            {% if user.is_authenticated%}
+            <h3>Welcome {{user.username}}</h3>
+            <a href="{% url 'search_results' %}">Search</a>
+            <a href="{% url 'song_list' %}">Songs</a>
+            {% for song in songs %}
+                {% if song.id %}
+                    <a href="{% url 'song_cover' song.id %}">Upload Cover</a>
+                {% endif %}
+            {% endfor %}
+            {% endif %}
+        </div>
+        <div class="right">
+            <a href="{% url 'register' %}">Register</a>
+            {% if user.is_authenticated %}
+            <a href="logout">Logout</a>
+            {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+    <header>
+        <h1>Poppy Music Site</h1>
+        <p>Discover and enjoy music by Poppy!</p>
+    </header>
+    <main>
+        <h2>Featured Tracks</h2>
+        <ul class="music-list">
+            <li>
+                <img src="https://i.imgur.com/1.jpg" alt="Concrete Cover" class="cover-image">
+                <div class="song-info">
+                    <strong>Track 1:</strong> <em>Concrete</em>
+                </div>
+            </li>
+            <li>
+                <img src="https://i.imgur.com/2.jpg" alt="Bloodmoney Cover" class="cover-image">
+                <div class="song-info">
+                    <strong>Track 2:</strong> <em>Bloodmoney</em>
+                </div>
+            </li>
+            <li>
+                <img src="https://i.imgur.com/3.jpg" alt="X Cover" class="cover-image">
+                <div class="song-info">
+                    <strong>Track 3:</strong> <em>X</em>
+                </div>
+            </li>
+        </ul>
+    </main>
+    <footer>
+        &copy; 2024 Poppy Music Site
+    </footer>
+</body>
+</html></div>

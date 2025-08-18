@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login now</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('https://images.pexels.com/photos/7367085/pexels-photo-7367085.jpeg?auto=compress&cs=tinysrgb&w=600');
+            font-family: 'Montserrat', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: #fff;
+            padding: 2.5rem 2rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(60, 60, 120, 0.18);
+            width: 350px;
+            text-align: center;
+        }
+        h1 {
+            color: #7c3aed;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+        }
+        h3 {
+            color: #e11d48;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        form p {
+            margin: 1rem 0 0.3rem 0;
+            color: #6366f1;
+            font-weight: 600;
+            text-align: left;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 0.7rem;
+            margin-bottom: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #f3f4f6;
+            transition: border 0.2s;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            border: 1.5px solid #7c3aed;
+            outline: none;
+            background: #fff;
+        }
+        input[type="submit"] {
+            background: linear-gradient(90deg, #7c3aed 0%, #6366f1 100%);
+            color: #fff;
+            border: none;
+            padding: 0.8rem 2.5rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
+            transition: background 0.2s, transform 0.2s;
+        }
+        input[type="submit"]:hover {
+            background: linear-gradient(90deg, #6366f1 0%, #7c3aed 100%);
+            transform: translateY(-2px) scale(1.03);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Login now</h1>
+        {% for message in messages %}
+        <h3>{{ message }}</h3>
+        {% endfor %}
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <p>Username</p>
+            <input type="text" name="username" autocomplete="username" required/>
+            <p>Password</p>
+            <input type="password" name="password" autocomplete="current-password" required/>
+            <input type="submit" value="Login"/>
+        </form>
+    </div>
+</body>
+</html>

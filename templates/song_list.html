@@ -1,0 +1,292 @@
+{% load static %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<h1 class="fancy-title">🎵 Song List</h1>
+<div class="song-list">
+    {% for song in songs %}
+        <div class="song-item" id="song-{{ song.id }}">
+            <h3 class="song-title">{{ song.title }} <h2 class="by-artist">by {{ song.artist }}</h2></h3>
+
+            <audio controls class="audio-player">
+                <source src="{{ song.audio_file.url }}" type="audio/mpeg">
+            </audio>
+
+            <!-- Like Section -->
+            <div class="like-section">
+                <button 
+                    class="like-button {% if song.id in liked_songs %}liked{% endif %}" 
+                    data-song-id="{{ song.id }}">
+                    {% if song.id in liked_songs %}❤️ Liked{% else %}🤍 Like{% endif %}
+                </button>
+                <span id="like-count-{{ song.id }}" class="like-count">
+                    {{ song.likes.count }} Likes
+                </span>
+            </div>
+
+            <!-- Comment Form --><div id="now-playing-details" class="now-playing-box" style="display:none;">
+    <h2>Now Playing</h2>
+    <p><strong>Title:</strong> <span id="np-title"></span></p>
+    <p><strong>Artist:</strong> <span id="np-artist"></span></p>
+    <p><strong>Album:</strong> <span id="np-album"></span></p>
+</div>
+
+            <div class="comment-form">
+                {% if user.is_authenticated %}
+                    <form class="ajax-comment-form" data-song-id="{{ song.id }}">
+                        {% csrf_token %}
+                        <textarea name="content" rows="2" placeholder="Add a comment..."></textarea><br>
+                        <button type="submit" class="fancy-btn">Post Comment</button>
+                    </form>
+                {% else %}
+                    <p><a href="{% url 'login' %}" class="login-link">Login</a> to comment.</p>
+                {% endif %}
+            </div>
+
+            <!-- Recent Comments -->
+            <div class="comments-list" id="comments-{{ song.id }}">
+                <h4>Recent Comments:</h4>
+                {% for comment in song.recent_comments %}
+                    <div class="comment {% if comment.user == user %}user-comment{% endif %}">
+                        <strong>{{ comment.user.username }}</strong>: {{ comment.content }}<br>
+                        <small>{{ comment.created_at|date:"SHORT_DATETIME_FORMAT" }}</small>
+                    </div>
+                {% empty %}
+                    <p>No comments yet. Be the first!</p>
+                {% endfor %}
+            </div>
+
+            <hr>
+        </div>
+    {% endfor %}
+</div>
+
+<style>
+    body {
+        background-color: #000;
+        font-family: 'Segoe UI', 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .fancy-title {
+        text-align: center;
+        font-size: 2.8rem;
+        margin: 30px 0 40px 0;
+        color: #fff;
+        letter-spacing: 2px;
+        text-shadow: 0 4px 16px #fda08599;
+    }
+
+    .song-list {
+        max-width: 700px;
+        margin: 0 auto;
+        background: rgba(255,255,255,0.95);
+        border-radius: 18px;
+        box-shadow: 0 8px 32px #fda08544;
+        padding: 30px 30px 10px 30px;
+    }
+
+    .song-item {
+        margin-bottom: 40px;
+        padding: 24px 18px 18px 18px;
+        border-radius: 14px;
+        background: linear-gradient(100deg, #fffbe7 60%, #ffe0c3 100%);
+        box-shadow: 0 2px 12px #f6d36533;
+        transition: box-shadow 0.2s;
+    }
+    .song-item:hover {
+        box-shadow: 0 6px 24px #fda08555;
+    }
+
+    .song-title {
+        font-size: 1.5rem;
+        color: #f57c00;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+    .by-artist {
+        font-size: 1rem;
+        color: #888;
+        font-weight: 400;
+        margin-left: 8px;
+    }
+
+    .audio-player {
+        width: 100%;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        background: #fff3e0;
+        box-shadow: 0 1px 4px #f6d36533;
+    }
+
+    .like-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+
+    .like-button {
+        margin-top: 0;
+        background: linear-gradient(90deg, #fda085 0%, #f6d365 100%);
+        border: none;
+        font-size: 1.1rem;
+        cursor: pointer;
+        color: #fff;
+        border-radius: 20px;
+        padding: 7px 18px;
+        transition: background 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 8px #fda08533;
+        outline: none;
+    }
+    .like-button.liked {
+        background: linear-gradient(90deg, #ff5858 0%, #f09819 100%);
+        color: #fff;
+        font-weight: bold;
+        box-shadow: 0 2px 12px #ff585855;
+    }
+    .like-count {
+        font-size: 1rem;
+        color: #f57c00;
+        font-weight: 500;
+        margin-left: 4px;
+    }
+
+    .comment-form textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 7px;
+        border-radius: 8px;
+        border: 1px solid #ffd59e;
+        background: #fffbe7;
+        font-size: 1rem;
+        resize: vertical;
+        transition: border 0.2s;
+    }
+    .comment-form textarea:focus {
+        border: 1.5px solid #fda085;
+        outline: none;
+    }
+    .fancy-btn {
+        background: linear-gradient(90deg, #fda085 0%, #f6d365 100%);
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        padding: 7px 18px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        box-shadow: 0 2px 8px #fda08533;
+        transition: background 0.2s;
+    }
+    .fancy-btn:hover {
+        background: linear-gradient(90deg, #f09819 0%, #ff5858 100%);
+    }
+    .login-link {
+        color: #f57c00;
+        text-decoration: underline;
+        font-weight: 500;
+    }
+
+    .comments-list {
+        background: #fffbe7;
+        padding: 14px 12px 8px 12px;
+        margin-top: 12px;
+        border-radius: 8px;
+        box-shadow: 0 1px 6px #f6d36522;
+    }
+
+    .comment {
+        padding: 8px 10px;
+        border-bottom: 1px solid #ffe0c3;
+        font-size: 1rem;
+        color: #444;
+        background: transparent;
+        border-radius: 5px;
+        margin-bottom: 2px;
+    }
+    .comment:last-child {
+        border-bottom: none;
+    }
+    .comment.user-comment {
+        background: linear-gradient(90deg, #e0f7fa 60%, #fffbe7 100%);
+        border-left: 4px solid #fda085;
+        font-weight: 500;
+        color: #007bff;
+    }
+    .comment strong {
+        color: #f57c00;
+    }
+    .comment small {
+        color: #888;
+        font-size: 0.85em;
+        margin-left: 6px;
+    }
+
+    hr {
+        border: none;
+        border-top: 1.5px solid #ffd59e;
+        margin: 24px 0 0 0;
+    }
+</style>
+
+<script>
+    // Function to get CSRF token safely
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": csrftoken }
+    });
+
+    $(document).ready(function () {
+        // Like handler
+        $('.like-button').click(function () {
+            const songId = $(this).data('song-id');
+            const button = $(this);
+            $.post(`/songs/${songId}/like/`, function (response) {
+                if (response.success) {
+                    $('#like-count-' + songId).text(response.like_count + " Likes");
+                    button.toggleClass('liked');
+                    button.text(response.liked ? "❤️ Liked" : "🤍 Like");
+                }
+            });
+        });
+
+        // Comment submit handler
+        $('.ajax-comment-form').submit(function (e) {
+            e.preventDefault();
+            const form = $(this);
+            const songId = form.data('song-id');
+            const content = form.find('textarea[name="content"]').val();
+
+            $.post(`/songs/${songId}/comment/`, {
+                content: content
+            }, function (response) {
+                if (response.success) {
+                    const commentHTML = `
+                        <div class="comment user-comment">
+                            <strong>${response.username}</strong>: ${response.content}<br>
+                            <small>Just now</small>
+                        </div>`;
+                    $('#comments-' + songId).prepend(commentHTML);
+                    form.find('textarea').val('');
+                }
+            });
+        });
+    });
+</script>

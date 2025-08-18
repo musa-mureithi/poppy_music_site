@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leave a Comment</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        form { max-width: 400px; margin: auto; }
+        textarea { width: 100%; height: 100px; }
+        input[type="submit"] { margin-top: 1em; }
+        .comments { margin-top: 2em; }
+        .comment { border-bottom: 1px solid #ccc; padding: 1em 0; }
+    </style>
+</head>
+<body>
+    <h1>Leave a Comment</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="author">Name:</label><br>
+        <input type="text" id="author" name="author" required><br><br>
+        <label for="text">Comment:</label><br>
+        <textarea id="text" name="text" required></textarea><br>
+        <input type="submit" value="Post Comment">
+    </form>
+
+    <div class="comments">
+        <h2>Comments</h2>
+        {% for comment in comments %}
+            <div class="comment">
+                <strong>{{ comment.author }}</strong> <em>{{ comment.created_at }}</em>
+                <p>{{ comment.text }}</p>
+            </div>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

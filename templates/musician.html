@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Musician Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'music/css/styles.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .profile-header {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .profile-header img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #ccc;
+        }
+        h1, h2 {
+            margin-bottom: 10px;
+            color: #444;
+        }
+        .form-section {
+            margin-top: 30px;
+        }
+        .form-section textarea, .form-section input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-section button {
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-section button:hover {
+            background: #218838;
+        }
+        ul.album-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        ul.album-list li {
+            background: #f1f1f1;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .messages {
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="profile-header">
+            {% if musician.profile_picture %}
+                <img src="{{ musician.profile_picture.url }}" alt="{{ musician.name }}">
+            {% else %}
+                <img src="{% static 'music/images/default_profile.jpg' %}" alt="Default">
+            {% endif %}
+            <div>
+                <h1>{{ musician.name }}</h1>
+                <p><strong>Genre:</strong> {{ musician.get_genre_display }}</p>
+
+                <p><strong>Bio:</strong> {{ musician.bio }}</p>
+            </div>
+        </div>
+
+        <h2>Albums</h2>
+        <ul class="album-list">
+            {% for album in musician.albums.all %}
+                <li><strong>{{ album.title }}</strong> ({{ album.year }})</li>
+            {% empty %}
+                <li>No albums found.</li>
+            {% endfor %}
+        </ul>
+
+        {% if user.is_authenticated %}
+        <div class="form-section">
+            <h2>Update Profile</h2>
+            <form action="{% url 'musician' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label for="bio">Bio:</label>
+                <textarea name="bio" id="bio" rows="4" placeholder="Enter your bio...">{{ musician.bio }}</textarea>
+
+                <label for="profile_picture">Profile Picture:</label>
+                <input type="file" name="profile_picture" id="profile_picture">
+
+                <button type="submit">Update Profile</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

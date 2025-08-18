@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head></head>
+    <meta charset="UTF-8">
+    <title>{{ songs.title }} - Song Details</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7f7fa;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            padding: 32px 40px 40px 40px;
+        }
+        h1, h2, h3 {
+            color: #b92b27;
+            margin-top: 0;
+        }
+        audio {
+            width: 100%;
+            margin: 16px 0;
+        }
+        label {
+            font-weight: 500;
+            color: #444;
+        }
+        input[readonly] {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 6px 10px;
+            border-radius: 4px;
+            width: 90%;
+            margin-bottom: 8px;
+        }
+        form {
+            margin-bottom: 18px;
+        }
+        button {
+            background: #b92b27;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #7c1c1a;
+        }
+        .apple-artwork {
+            margin-top: 10px;
+            max-width: 180px;
+            border-radius: 8px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            background: #f4f4f8;
+            margin-bottom: 8px;
+            padding: 10px 14px;
+            border-radius: 6px;
+        }
+        .comment-form {
+            margin-bottom: 24px;
+        }
+        .like-section {
+            margin-top: 18px;
+            margin-bottom: 18px;
+        }
+        a {
+            color: #b92b27;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 28px 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 18px;
+            font-size: 1.1em;
+        }
+        .apple-info-form label {
+            display: inline-block;
+            width: 110px;
+            vertical-align: top;
+        }
+        .apple-info-form input {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>{{ songs.title }}</h1>
+    <p><strong>Artist:</strong> {{ songs.artist }}</p>
+
+    <audio controls>
+        <source src="{{ songs.audio_file.url }}" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <hr>
+
+    {% if apple_data %}
+        <h2>Apple Music Info</h2>
+        <form class="apple-info-form">
+            <label>Track Name:</label>
+            <input type="text" value="{{ apple_data.track_name }}" readonly><br>
+
+            <label>Artist:</label>
+            <input type="text" value="{{ apple_data.artist_name }}" readonly><br>
+
+            <label>Album:</label>
+            <input type="text" value="{{ apple_data.album_name }}" readonly><br>
+
+            <label>Genre:</label>
+            <input type="text" value="{{ apple_data.genre }}" readonly><br>
+
+            <label>Release Date:</label>
+            <input type="text" value="{{ apple_data.release_date }}" readonly><br>
+
+            <label>Apple Music:</label>
+            <a href="{{ apple_data.apple_music_url }}" target="_blank">Open in Apple Music</a><br>
+
+            <img class="apple-artwork" src="{{ apple_data.artwork }}" alt="Album Artwork">
+        </form>
+    {% else %}
+        <p>❌ No additional Apple Music data found for "{{ songs.title }}".</p>
+    {% endif %}
+
+    <hr>
+
+    <h2>Comments</h2>
+    {% if user.is_authenticated %}
+        <form method="post" class="comment-form">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit" name="comment_submit">Post Comment</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'login' %}">Login</a> to leave a comment.</p>
+    {% endif %}
+
+    <ul>
+        {% for comment in comments %}
+            <li>
+                <strong>{{ comment.user.username }}</strong>: {{ comment.content }} <br>
+                <small>({{ comment.created_at|date:"SHORT_DATETIME_FORMAT" }})</small>
+            </li>
+        {% empty %}
+            <li>No comments yet.</li>
+        {% endfor %}
+    </ul>
+
+    <hr>
+
+    <div class="like-section">
+        <h3>{{ like_count }} Like{{ like_count|pluralize }}</h3>
+        {% if user.is_authenticated %}
+            {% if liked %}
+                <p>You liked this song 👍</p>
+            {% else %}
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="like_submit">Like ❤️</button>
+                </form>
+            {% endif %}
+        {% else %}
+            <p><a href="{% url 'login' %}">Login</a> to like this song.</p>
+        {% endif %}
+    </div>
+
+    <a class="back-link" href="{% url 'song_list' %}">⬅ Back to Song List</a>
+</div>
+</body>
+</html></form>
