@@ -2,6 +2,7 @@
 .db
 *.sqlite
 *.sqlite3
+*.env
 
 __pycache__/
 *.py[cod]
