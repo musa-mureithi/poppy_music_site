@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from cloudinary.models import CloudinaryField
 
 GENRE_CHOICES = [
     ('rock', 'Rock'),
@@ -34,7 +35,7 @@ class Song(models.Model):
     artist = models.ForeignKey(Musician, on_delete=models.CASCADE)
     album = models.CharField(max_length=200, blank=True, null=True)
     release_date = models.DateField(default=timezone.now)
-    audio_file = models.FileField(upload_to='songs/')
+    audio_file = CloudinaryField(resource_type="raw", folder="songs/")
     cover_image = models.ImageField(upload_to='cover_images/', blank=True, null=True)
 
     def __str__(self):
